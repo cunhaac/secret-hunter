@@ -121,13 +121,6 @@ const CRITICAL_PATTERNS = [
   /[A-Za-z0-9]{8}\.[A-Za-z0-9]{4}\.[A-Za-z0-9]{4}\.[A-Za-z0-9]{4}\.[A-Za-z0-9]{12}/,  // AAD secure token
   /"clientSecret":\s*"[A-Za-z0-9\._~\-\+\/]{20,100}"/,
 
-
-  // ========================
-  // ALGOLIA
-  // ========================
-  /[A-Za-z0-9]{32}-[A-Za-z0-9]{10}/,                      // Admin API keys often this format
-
-
   // ========================
   // MAILGUN
   // ========================
@@ -164,14 +157,6 @@ const CRITICAL_PATTERNS = [
   /ssh-rsa AAAA[0-9A-Za-z+/]{100,}[\s]*(?:[A-Za-z0-9@._-]+)?/,
   /ssh-ed25519 AAAA[0-9A-Za-z+/]{50,}[\s]*(?:[A-Za-z0-9@._-]+)?/,
   /ecdsa-sha2-nistp256 AAAA[0-9A-Za-z+/]{50,}/,
-
-
-  // ========================
-  // OAUTH / API TOKENS MISC
-  // ========================
-  /EAACEdEose0cBA[0-9A-Za-z]+/,                          // Facebook
-  /AQA[A-Za-z0-9_-]{100,}/,                              // Generic OAuth long tokens
-  /AAAA[A-Za-z0-9_-]{100,}/,                             // Very long opaque tokens
 
   
   // ========================
