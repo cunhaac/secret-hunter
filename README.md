@@ -1,6 +1,6 @@
 # Secret Hunter
 
-![Project Icon](icon.png)
+![Project Icon](icons/icon.png)
 
 *Disclaimer: Vibe Coding*
 
