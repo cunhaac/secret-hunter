@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Secret Hunter</title>
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+<h2>Secret Hunter</h2>
+<div id="results">Loading...</div>
+<hr>
+<div id="debug-info">
+  <h3>Files Scanned:</h3>
+  <ul id="scanned-files-list"><li>Scanning...</li></ul>
+</div>
+
+<hr>
+
+<div id="excluded-domains-section">
+  <h3>Excluded Domains</h3>
+  <div class="exclude-form">
+    <input type="text" id="domain-to-exclude" placeholder="e.g., example.com">
+    <button id="add-domain-btn">Exclude</button>
+  </div>
+  <ul id="excluded-domains-list"></ul>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

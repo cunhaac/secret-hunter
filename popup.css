@@ -1,0 +1,22 @@
+body {
+font-family: Arial, sans-serif;
+width: 320px;
+padding: 0 10px 10px 10px;
+}
+.key {
+background: #f3f3f3;
+padding: 8px;
+border-radius: 6px;
+margin-bottom: 10px;
+border-left: 5px solid #888;
+}
+.key.CRITICAL { border-color: #d9534f; }
+.key.HIGH { border-color: #f0ad4e; }
+.key.MEDIUM { border-color: #5bc0de; }
+.key a {
+  color: #0056b3;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
