@@ -3,79 +3,183 @@
 // --------------------
 const CRITICAL_PATTERNS = [
 
-  // Amazon AWS
-  /AKIA[0-9A-Z]{16}/,                                   // Access Key ID
-  /ASIA[0-9A-Z]{16}/,                                   // Temporary STS key
-  /A3T[A-Z0-9]{16}/,                                    // AWS Device Auth
-  /AKTP[0-9A-Z]{16}/,                                   // AWS Finance Key
+  // ========================
+  // AMAZON AWS
+  // ========================
+  /AKIA[0-9A-Z]{16}/,                                    // Access Key ID
+  /ASIA[0-9A-Z]{16}/,                                    // STS Key
+  /A3T[A-Z0-9]{16}/,                                     // Device Auth
+  /AKTP[0-9A-Z]{16}/,                                    // Finance Key
 
-  // AWS Secret Key
+  // AWS Secret Keys
   /(?:aws_)?secret(?:_access)?_key[^A-Za-z0-9]*([A-Za-z0-9\/+=]{40})/i,
 
-  // Google Cloud
-  // /AIza[0-9A-Za-z\-_]{35}/,                          // GCP API key MANY LEGITIMATE EXPOSED KEYS
-  /ya29\.[0-9A-Za-z\-_]+/,                              // OAuth Google Access Token
-  /[0-9a-f]{64}_apps\.googleusercontent\.com/,          // OAuth Client Secret
+  // AWS Session Tokens (base64-ish)
+  /AQoDYXdzE[\w+=\/]{30,}/,
 
-  // Firebase
-  /AAAA[A-Za-z0-9_-]{7}:[A-Za-z0-9_-]{140}/,            // FCM Server Key
   
-  // GitHub
-  /gh[pousr]_[A-Za-z0-9]{36}/,
-  
-  // GitLab
-  /glpat-[A-Za-z0-9\-]{20,50}/,                         // Personal Access Token
-  /glptt-[A-Za-z0-9\-]{20,50}/,                         // Trigger Token
+  // ========================
+  // GOOGLE CLOUD
+  // ========================
+  /ya29\.[0-9A-Za-z\-_]+/,                               // OAuth Google Access Token
+  /[0-9a-f]{64}_apps\.googleusercontent\.com/,           // GCP OAuth Client Secret
 
-  // Slack
+  // GCP service account private key ID
+  /"private_key_id":\s*"[0-9a-f]{40}"/,
+
+
+  // ========================
+  // FIREBASE
+  // ========================
+  /AAAA[A-Za-z0-9_-]{7}:[A-Za-z0-9_-]{140}/,             // FCM Server Key
+
+
+  // ========================
+  // GITHUB / GITLAB
+  // ========================
+  /gh[pousr]_[A-Za-z0-9]{36}/,                           // GitHub Tokens
+  /glpat-[A-Za-z0-9\-]{20,50}/,                          // GitLab Access Token
+  /glptt-[A-Za-z0-9\-]{20,50}/,                          // GitLab Trigger Token
+
+
+  // ========================
+  // SLACK
+  // ========================
   /xox[baprs]-[0-9]{8,}-[A-Za-z0-9-]{10,}/,
   /xapp-[0-9A-Za-z-]{20,200}/,
   /xoxa-[0-9A-Za-z-]{20,200}/,
-  
-  // Discord
+
+
+  // ========================
+  // DISCORD
+  // ========================
   /[MN][A-Za-z0-9]{23}\.[\w-]{6}\.[\w-]{27}/,
 
-  // Stripe
+
+  // ========================
+  // STRIPE
+  // ========================
   /sk_live_[0-9a-zA-Z]{24}/,
   /rk_live_[0-9a-zA-Z]{24}/,
+  /whsec_[A-Za-z0-9]{32,}/,                              // Webhook Signing Secret
 
-  // OpenAI / Anthropic / LLaMA / HuggingFace
+
+  // ========================
+  // OPENAI / ANTHROPIC / HF / LLAMA
+  // ========================
   /sk-[A-Za-z0-9]{32,48}/,
   /hf_[A-Za-z0-9]{35,80}/,
   /anthropic-[A-Za-z0-9-]{30,80}/,
 
-  // Cloudflare
+
+  // ========================
+  // CLOUDFLARE
+  // ========================
   /cf_[A-Za-z0-9]{40,}/,
 
-  // Twilio
+
+  // ========================
+  // TWILIO
+  // ========================
   /SK[0-9a-fA-F]{32}/,
 
-  // SendGrid
+
+  // ========================
+  // SENDGRID
+  // ========================
   /SG\.[A-Za-z0-9_-]{20,200}/,
 
-  // JSON Web Tokens (JWT)
-  /eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/,
 
-  // Private Keys
-  /-----BEGIN(?:[A-Z ]+)?PRIVATE KEY-----[\s\S]+?-----END(?:[A-Z ]+)?PRIVATE KEY-----/,
+  // ========================
+  // DIGITALOCEAN
+  // ========================
+  /dop_v1_[A-Za-z0-9]{64}/,
 
-  // SSH Keys
-  /ssh-rsa AAAA[0-9A-Za-z+/]{100,}\s*[A-Za-z0-9@._-]*/,
 
-  // Stripe Signing Secret
-  /whsec_[A-Za-z0-9]{32,}/,
+  // ========================
+  // LINODE
+  // ========================
+  /linode_[A-Za-z0-9]{64}/,
 
-  // Databricks
-  /dapi[a-zA-Z0-9]{32}/,
 
-  // Heroku
+  // ========================
+  // HASHICORP / TERRAFORM
+  // ========================
+  /hvs\.[A-Za-z0-9]{24,80}/,                              // Vault Token
+  /tfe-[A-Za-z0-9]{36}/,                                  // Terraform Cloud Token
+
+
+  // ========================
+  // HEROKU
+  // ========================
   /heroku_[A-Za-z0-9]{32}/,
 
-  // HashiCorp Vault
-  /hvs\.[A-Za-z0-9]{24,80}/,
 
-  // Azure
-  /[A-Za-z0-9]{8}\.[A-Za-z0-9]{4}\.[A-Za-z0-9]{4}\.[A-Za-z0-9]{4}\.[A-Za-z0-9]{12}/,  // AAD Secure token format
+  // ========================
+  // AZURE
+  // ========================
+  /[A-Za-z0-9]{8}\.[A-Za-z0-9]{4}\.[A-Za-z0-9]{4}\.[A-Za-z0-9]{4}\.[A-Za-z0-9]{12}/,  // AAD secure token
+  /"clientSecret":\s*"[A-Za-z0-9\._~\-\+\/]{20,100}"/,
+
+
+  // ========================
+  // ALGOLIA
+  // ========================
+  /[A-Za-z0-9]{32}-[A-Za-z0-9]{10}/,                      // Admin API keys often this format
+
+
+  // ========================
+  // MAILGUN
+  // ========================
+  /key-[0-9a-zA-Z]{32}/,
+
+
+  // ========================
+  // DATABASE CONNECTION STRINGS
+  // ========================
+  /mongodb(\+srv)?:\/\/[A-Za-z0-9._%\-]+:[^@]+@[A-Za-z0-9.\-]+(:[0-9]+)?\/[A-Za-z0-9._\-]+/,
+  /postgres(?:ql)?:\/\/[A-Za-z0-9._%-]+:[^@]+@[A-Za-z0-9.\-]+(:[0-9]+)?\/[A-Za-z0-9._\-]+/,
+  /redis:\/\/:[^@]+@[A-Za-z0-9.\-]+:[0-9]+/,
+  /mysql:\/\/[A-Za-z0-9._%-]+:[^@]+@[A-Za-z0-9.\-]+\/[A-Za-z0-9._\-]+/,
+
+
+  // ========================
+  // JWT TOKENS
+  // ========================
+  /eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/,
+
+
+  // ========================
+  // PRIVATE KEYS
+  // ========================
+  /-----BEGIN(?:[ A-Z]+)?PRIVATE KEY-----[\s\S]+?-----END(?:[ A-Z]+)?PRIVATE KEY-----/,
+  /-----BEGIN(?:[ A-Z]+)?RSA PRIVATE KEY-----[\s\S]+?-----END(?:[ A-Z]+)?RSA PRIVATE KEY-----/,
+  /-----BEGIN(?:[ A-Z]+)?EC PRIVATE KEY-----[\s\S]+?-----END(?:[ A-Z]+)?EC PRIVATE KEY-----/,
+  /-----BEGIN PGP PRIVATE KEY BLOCK-----[\s\S]+?-----END PGP PRIVATE KEY BLOCK-----/,
+
+
+  // ========================
+  // SSH KEYS
+  // ========================
+  /ssh-rsa AAAA[0-9A-Za-z+/]{100,}[\s]*(?:[A-Za-z0-9@._-]+)?/,
+  /ssh-ed25519 AAAA[0-9A-Za-z+/]{50,}[\s]*(?:[A-Za-z0-9@._-]+)?/,
+  /ecdsa-sha2-nistp256 AAAA[0-9A-Za-z+/]{50,}/,
+
+
+  // ========================
+  // OAUTH / API TOKENS MISC
+  // ========================
+  /EAACEdEose0cBA[0-9A-Za-z]+/,                          // Facebook
+  /AQA[A-Za-z0-9_-]{100,}/,                              // Generic OAuth long tokens
+  /AAAA[A-Za-z0-9_-]{100,}/,                             // Very long opaque tokens
+
+  
+  // ========================
+  // CLOUD MISC
+  // ========================
+  /dapi[a-zA-Z0-9]{32}/,                                 // Databricks
+  /tokenv2\.[A-Za-z0-9\-_]{60,}/,                        // Supabase JWT-like keys
+
 
   // Miscelanious
   /\btoken\s*[:=]\s*['"][A-Za-z0-9_\-]{10,200}['"]/i,
@@ -83,6 +187,7 @@ const CRITICAL_PATTERNS = [
   /\bsecret\s*[:=]\s*['"][A-Za-z0-9_\-]{10,200}['"]/i,
   /\bpassword\s*[:=]\s*['"][^'"]{4,200}['"]/i,
   /\bclient[_-]?secret\b\s*[:=]\s*['"][A-Za-z0-9_-]{10,200}['"]/i
+
 ];
 
 
